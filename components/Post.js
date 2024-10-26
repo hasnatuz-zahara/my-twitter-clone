@@ -1,9 +1,11 @@
-import { db } from "@/firebase";
+import { db, storage } from "@/firebase";
 import { ChartBarIcon, ChatIcon, DotsHorizontalIcon, HeartIcon, ShareIcon, TrashIcon } from "@heroicons/react/outline";
 import { collection, deleteDoc, doc, onSnapshot, setDoc } from "firebase/firestore";
 import { signIn, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { HeartIcon as HeartIconFilled } from "@heroicons/react/solid";
+import { deleteObject, ref } from "firebase/storage";
+import Moment from "react-moment";
 
 
 export default function Post({ post }) {
@@ -34,6 +36,18 @@ export default function Post({ post }) {
             signIn()
         }
     }
+    async function deletePost() {
+        if (window.confirm("Are you sure you want to delete this post?")) {
+            deleteDoc(doc(db, "posts", post.id));
+            if (post.data().image) {
+                deleteObject(ref(storage, `posts/${post.id}/image`));
+            }
+        }
+    }
+
+
+
+
     return (
         <div className="flex p-3 cursor-pointer border-b border-gray-200">
             { /*user image */}
@@ -50,7 +64,9 @@ export default function Post({ post }) {
                     <div className="flex items-center space-x-1 whitespace-nowrap">
                         <h4 className="font-bold text-[15px] sm:text-[16px] hover:underline">{post.data().name}</h4>
                         <span className="text-sm sm:text-[15px]">@{post.data().username} - </span>
-                        <span className="text-sm sm:text-[15px] hover:underline">{post.timestamp}</span>
+                        <span className="text-sm sm:text-[15px] hover:underline">
+                            <Moment fromNow>{post?.timestamp?.toDate()}</Moment>
+                        </span>
                     </div>
 
                     {/* dot icon */}
@@ -66,7 +82,9 @@ export default function Post({ post }) {
                 {/*icons*/}
                 <div className="flex justify-between text-gray-500 p-2">
                     <ChatIcon className="h-9 w-9 hoverEffect p-2 hover:text-sky-500 hover:bg-sky-100" />
-                    <TrashIcon className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100" />
+                    {session?.user.uid === post?.data().id && (
+                        <TrashIcon onClick={deletePost} className="h-9 w-9 hoverEffect p-2 hover:text-red-600 hover:bg-red-100" />
+                    )}
                     <div className="flex items-center">
                         {hasLiked ? (
                             <HeartIconFilled
