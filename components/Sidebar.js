@@ -10,7 +10,11 @@ export default function Sidebar() {
     <div className="hidden sm:flex flex-col p-2 xl:items-start fixed h-full xl:ml-24">
       { /* Twitter logo */}
       <div className="hoverEffect p-0 hover:bg-blue-100 xl:px-1">
-        <Image width="50" height="50" src="https://help.twitter.com/content/dam/help-twitter/brand/logo.png"></Image>
+        <Image
+          width="50"
+          height="50"
+          src="https://help.twitter.com/content/dam/help-twitter/brand/logo.png"
+        ></Image>
       </div>
 
       {/* Menu */}

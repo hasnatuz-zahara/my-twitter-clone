@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 
 
+
 export default function CommentModal() {
     const [open, setOpen] = useRecoilState(modalState);
     const [postId] = useRecoilState(postIdState);
@@ -31,7 +32,8 @@ export default function CommentModal() {
             name: session.user.name,
             username: session.user.username,
             userImg: session.user.image,
-            timestamp: serverTimestamp()
+            timestamp: serverTimestamp(),
+            userId: session.user.uid,
         });
         setOpen(false);
         setInput("");
